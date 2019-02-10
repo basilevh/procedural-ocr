@@ -1,0 +1,16 @@
+# Exclude folders
+bin/*
+obj/*
+.vs/*
+packages/*
+
+# Include .gitignore
+!.gitignore
+
+# Include executable file
+# 1) Reinclude one folder
+!bin/Release/
+# 2) Exclude its contents
+bin/Release/*
+# 3) Reinclude one file
+!bin/Release/ProceduralOCR.exe
