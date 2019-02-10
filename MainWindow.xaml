@@ -5,16 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProceduralOCR"
         mc:Ignorable="d"
-        Title="Procedural OCR" Height="330" Width="370">
+        Title="Procedural OCR" Height="480" Width="480">
     <Grid>
         <Label Content="© Basile Van Hoorick" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Bottom" Foreground="#7F000000"/>
         <Button x:Name="btnExample" Content="Example" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="btnExample_Click"/>
         <Button x:Name="btnTrain" Content="Train" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Width="75" Click="btnTrain_Click"/>
-        <Button x:Name="btnGenerate" Content="Generate" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="75" Click="btnGenerate_Click"/>
+        <Button x:Name="btnTest" Content="Test" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="75" Click="btnTest_Click"/>
         <Button x:Name="btnBrowse" Content="Browse..." HorizontalAlignment="Left" Margin="10,85,0,0" VerticalAlignment="Top" Width="75" Click="btnBrowse_Click"/>
-        <Button x:Name="btnDetect" Content="Detect" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" Width="75" Click="btnDetect_Click"/>
-        <Image x:Name="imageControl" HorizontalAlignment="Left" Height="256" Margin="90,10,0,0" VerticalAlignment="Top" Width="256"/>
-        <TextBox x:Name="txtResult" HorizontalAlignment="Left" Margin="10,135,0,33" TextWrapping="Wrap" Text="Result" VerticalAlignment="Stretch" Width="75"/>
+        <Button x:Name="btnRecognize" Content="Recognize" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top" Width="75" Click="btnRecognize_Click"/>
+        <Image x:Name="imageControl" HorizontalAlignment="Left" Height="256" Margin="160,10,0,0" VerticalAlignment="Top" Width="256"/>
+        <TextBox x:Name="txtResult" HorizontalAlignment="Left" Margin="10,135,0,10" TextWrapping="Wrap" Text="Result" VerticalAlignment="Stretch" Width="140" IsReadOnly="True" FontSize="16"/>
 
     </Grid>
 </Window>

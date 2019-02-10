@@ -28,12 +28,16 @@ namespace ProceduralOCR
         public MainWindow()
         {
             InitializeComponent();
+            characterGenerator = new MyCharacterGenerator(imageWidth, imageHeight);
+            ocrModel = new MyOCRModel(imageWidth, imageHeight, characterGenerator);
         }
+
+        private ICharacterGenerator characterGenerator;
+        private IOCRModel ocrModel;
 
         private void btnExample_Click(object sender, RoutedEventArgs e)
         {
-            ICharacterGenerator charGen = new MyCharacterGenerator(imageWidth, imageHeight);
-            var output = charGen.Generate();
+            var output = characterGenerator.Generate();
             var image = MyBitmapTools.GetImage(output.Image);
             RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
             imageControl.Source = image;
@@ -42,12 +46,12 @@ namespace ProceduralOCR
 
         private void btnTrain_Click(object sender, RoutedEventArgs e)
         {
-
+            var result = ocrModel.TrainModel(1024);
         }
 
-        private void btnGenerate_Click(object sender, RoutedEventArgs e)
+        private void btnTest_Click(object sender, RoutedEventArgs e)
         {
-
+            var result = ocrModel.TestModel(1024);
         }
 
         private void btnBrowse_Click(object sender, RoutedEventArgs e)
@@ -55,9 +59,13 @@ namespace ProceduralOCR
 
         }
 
-        private void btnDetect_Click(object sender, RoutedEventArgs e)
+        private void btnRecognize_Click(object sender, RoutedEventArgs e)
         {
-
+            float[,] input = MyBitmapTools.GetArray(imageControl.Source as WriteableBitmap);
+            var result = ocrModel.ExecuteSingle(input);
+            txtResult.Text = result.MostConfident + string.Join("",
+                Enumerable.Range('0', 10).Select(c => Environment.NewLine +
+                (char)c + ": " + result.GetProbability((char)c).ToString("0.0000")));
         }
     }
 }

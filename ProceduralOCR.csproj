@@ -68,6 +68,7 @@
     <Compile Include="MyBitmapTools.cs" />
     <Compile Include="MyCharacterGenerator.cs" />
     <Compile Include="MyRandom.cs" />
+    <Compile Include="NeuralNetworkTrainer.cs" />
     <Compile Include="TestResult.cs" />
     <Compile Include="TrainResult.cs" />
     <Compile Include="MainWindow.xaml.cs">

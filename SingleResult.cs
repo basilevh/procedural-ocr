@@ -19,12 +19,13 @@ namespace ProceduralOCR
         public SingleResult(IDictionary<char, float> probabilities)
         {
             this.probabilities = probabilities;
-            mostConfident = probabilities.Aggregate((a, b) => a.Value > b.Value ? a : b).Key;
+            MostConfident = probabilities.Aggregate((a, b) => a.Value > b.Value ? a : b).Key;
         }
 
         private readonly IDictionary<char, float> probabilities;
-        private readonly char mostConfident;
 
         public float GetProbability(char character) => probabilities[character];
+
+        public char MostConfident { get; }
     }
 }
