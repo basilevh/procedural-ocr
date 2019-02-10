@@ -62,13 +62,21 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ICharacterGenerator.cs" />
+    <Compile Include="IOCRModel.cs" />
+    <Compile Include="MyBitmapTools.cs" />
+    <Compile Include="MyCharacterGenerator.cs" />
+    <Compile Include="TestResult.cs" />
+    <Compile Include="TrainResult.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MyOCRModel.cs" />
     <Compile Include="NeuralNetwork.cs" />
+    <Compile Include="SingleResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

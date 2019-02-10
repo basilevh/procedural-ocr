@@ -22,9 +22,41 @@ namespace ProceduralOCR
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const int imageWidth = 16;
+        private const int imageHeight = 16;
+
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void btnExample_Click(object sender, RoutedEventArgs e)
+        {
+            ICharacterGenerator charGen = new MyCharacterGenerator(imageWidth, imageHeight);
+            var output = charGen.Generate();
+            var image = MyBitmapTools.GetImage(output);
+            RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
+            imageControl.Source = image;
+        }
+
+        private void btnTrain_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnGenerate_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnBrowse_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnDetect_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
