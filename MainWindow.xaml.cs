@@ -34,9 +34,10 @@ namespace ProceduralOCR
         {
             ICharacterGenerator charGen = new MyCharacterGenerator(imageWidth, imageHeight);
             var output = charGen.Generate();
-            var image = MyBitmapTools.GetImage(output);
+            var image = MyBitmapTools.GetImage(output.Image);
             RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
             imageControl.Source = image;
+            txtResult.Text = output.Character.ToString();
         }
 
         private void btnTrain_Click(object sender, RoutedEventArgs e)

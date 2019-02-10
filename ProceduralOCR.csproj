@@ -64,8 +64,10 @@
     </Compile>
     <Compile Include="ICharacterGenerator.cs" />
     <Compile Include="IOCRModel.cs" />
+    <Compile Include="LabeledCharacter.cs" />
     <Compile Include="MyBitmapTools.cs" />
     <Compile Include="MyCharacterGenerator.cs" />
+    <Compile Include="MyRandom.cs" />
     <Compile Include="TestResult.cs" />
     <Compile Include="TrainResult.cs" />
     <Compile Include="MainWindow.xaml.cs">

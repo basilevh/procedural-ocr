@@ -8,10 +8,13 @@ using System.Threading.Tasks;
 
 namespace ProceduralOCR
 {
+    /// <summary>
+    /// Interface for any generator of random optical characters in 2D array form.
+    /// </summary>
     public interface ICharacterGenerator
     {
-        float[,] Generate();
+        LabeledCharacter Generate();
 
-        List<float[,]> GenerateMulti(int count);
+        List<LabeledCharacter> GenerateMulti(int count);
     }
 }
