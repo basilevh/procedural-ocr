@@ -17,9 +17,13 @@ namespace ProceduralOCR
         {
             Character = character;
             Image = image;
+            NetworkInput = MyBitmapTools.ReshapeArray(image);
         }
 
         public char Character { get; }
+
         public float[,] Image { get; }
+
+        public float[] NetworkInput { get; }
     }
 }

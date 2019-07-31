@@ -10,7 +10,7 @@ namespace ProceduralOCR
 {
     public interface IOCRModel
     {
-        TrainResult TrainModel(int samples);
+        TrainResult TrainModel(int batches, int batchSize);
 
         TestResult TestModel(int samples);
 

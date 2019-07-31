@@ -10,5 +10,7 @@ namespace ProceduralOCR
 {
     public struct TestResult
     {
+        public int Tested;
+        public int Correct;
     }
 }

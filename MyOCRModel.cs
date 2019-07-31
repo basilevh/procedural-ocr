@@ -15,30 +15,26 @@ namespace ProceduralOCR
             this.imageWidth = imageWidth;
             this.imageHeight = imageHeight;
             this.characterGenerator = characterGenerator;
-            var layerSizes = new List<int>() { imageWidth * imageHeight, 32, 16, 10 };
+            // var layerSizes = new List<int>() { imageWidth * imageHeight, 20, 10, 10 };
+            var layerSizes = new List<int>() { imageWidth * imageHeight, 10 };
             neuralNetwork = new NeuralNetwork(layerSizes);
             neuralNetwork.InitializeWeights(0.2);
             neuralNetwork.InitializeBiases(0.2);
+            networkTrainer = new NeuralNetworkTrainer(neuralNetwork);
         }
 
         private readonly int imageWidth, imageHeight;
         private readonly ICharacterGenerator characterGenerator;
         private readonly NeuralNetwork neuralNetwork;
+        private readonly NeuralNetworkTrainer networkTrainer;
 
-        public TrainResult TrainModel(int samples)
+        public TrainResult TrainModel(int batches, int batchSize)
         {
-            var sample = characterGenerator.Generate();
-            NeuralNetworkTrainer.TrainSingle(neuralNetwork, sample);
-
-            /*const int batchSize = 64;
-            for (int i = 0; i < samples; i += batchSize)
+            for (int b = 0; b < batches; b++)
             {
-                var batch = characterGenerator.GenerateMulti(batchSize);
-                foreach (var sample in batch)
-                {
-                    NeuralNetworkTrainer.TrainSingle(neuralNetwork, sample);
-                }
-            }*/
+                var elements = characterGenerator.GenerateMulti(batchSize);
+                networkTrainer.SingleIteration(elements);
+            }
 
             TrainResult result;
             return result;
@@ -46,7 +42,16 @@ namespace ProceduralOCR
 
         public TestResult TestModel(int samples)
         {
-            throw new NotImplementedException();
+            TestResult result = new TestResult();
+            var elements = characterGenerator.GenerateMulti(samples);
+            foreach (var element in elements)
+            {
+                var current = ExecuteSingle(element.Image);
+                if (current.MostConfident == element.Character)
+                    result.Correct++;
+                result.Tested++;
+            }
+            return result;
         }
 
         public SingleResult ExecuteSingle(float[,] input)

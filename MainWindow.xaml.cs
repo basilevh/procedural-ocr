@@ -22,8 +22,8 @@ namespace ProceduralOCR
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const int imageWidth = 16;
-        private const int imageHeight = 16;
+        private const int imageWidth = 20;
+        private const int imageHeight = 20;
 
         public MainWindow()
         {
@@ -42,16 +42,21 @@ namespace ProceduralOCR
             RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.NearestNeighbor);
             imageControl.Source = image;
             txtResult.Text = output.Character.ToString();
+
+            // Automatically attempt to recognize
+            btnRecognize_Click(sender, e);
         }
 
         private void btnTrain_Click(object sender, RoutedEventArgs e)
         {
-            var result = ocrModel.TrainModel(1024);
+            var result = ocrModel.TrainModel(64, 64);
         }
 
         private void btnTest_Click(object sender, RoutedEventArgs e)
         {
             var result = ocrModel.TestModel(1024);
+            txtResult.Text = "Accuracy:" + Environment.NewLine +
+                ((double)result.Correct / result.Tested * 100.0).ToString("0.00") + "%";
         }
 
         private void btnBrowse_Click(object sender, RoutedEventArgs e)

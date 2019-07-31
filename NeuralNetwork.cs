@@ -15,15 +15,17 @@ namespace ProceduralOCR
             LayerSizes = new List<int>(layerSizes);
             LayerCount = layerSizes.Count;
             Layers = new List<float[]>(LayerCount);
+            WeightedSums = new List<float[]>(LayerCount);
             Weights = new List<float[,]>(LayerCount - 1);
             Biases = new List<float[]>(LayerCount - 1);
-            for (int layer = 0; layer < LayerCount; layer++)
+            for (int k = 0; k < LayerCount; k++)
             {
-                Layers.Add(new float[layerSizes[layer]]);
-                if (layer < LayerCount - 1)
+                Layers.Add(new float[layerSizes[k]]);
+                WeightedSums.Add(new float[layerSizes[k]]);
+                if (k < LayerCount - 1)
                 {
-                    Weights.Add(new float[layerSizes[layer], layerSizes[layer + 1]]);
-                    Biases.Add(new float[layerSizes[layer + 1]]);
+                    Weights.Add(new float[layerSizes[k], layerSizes[k + 1]]);
+                    Biases.Add(new float[layerSizes[k + 1]]);
                 }
             }
         }
@@ -32,23 +34,45 @@ namespace ProceduralOCR
 
         public int LayerCount { get; }
 
+        /// <summary>
+        /// The most recent neuron values for every layer.
+        /// The first index k accesses different layers (columns),
+        /// the second index i accesses different neurons (rows) within that layer.
+        /// </summary>
         public List<float[]> Layers;
 
+        /// <summary>
+        /// The most recent neuron values for every layer, before applying the activation function.
+        /// </summary>
+        public List<float[]> WeightedSums;
+
+        /// <summary>
+        /// The network weights from layer k to layer k+1.
+        /// The first index k accesses different layer pairs (columns),
+        /// the second index i accesses source neurons (left layer),
+        /// the third index j accesses destination neurons (right layer).
+        /// Note: the index order is opposite to mathematical convention.
+        /// </summary>
         public List<float[,]> Weights { get; }
 
+        /// <summary>
+        /// The network biases for every layer.
+        /// The first index k accesses different layers (columns) excluding the input layer,
+        /// the second index j accesses different neurons (rows) within that layer.
+        /// </summary>
         public List<float[]> Biases { get; }
 
         public void InitializeWeights(double stdDev)
         {
             // Initialize weights to random values
-            for (int layer = 0; layer < LayerCount - 1; layer++)
+            for (int k = 0; k < LayerCount - 1; k++)
             {
-                for (int j = 0; j < LayerSizes[layer + 1]; j++)
+                for (int j = 0; j < LayerSizes[k + 1]; j++)
                 {
-                    double[] allNoise = MyRandom.NextStdGaussian(LayerSizes[layer]);
-                    for (int i = 0; i < LayerSizes[layer]; i++)
+                    double[] allNoise = MyRandom.NextStdGaussian(LayerSizes[k]);
+                    for (int i = 0; i < LayerSizes[k]; i++)
                     {
-                        Weights[layer][i, j] = (float)(allNoise[i] * stdDev);
+                        Weights[k][i, j] = (float)(allNoise[i] * stdDev);
                     }
                 }
             }
@@ -57,43 +81,46 @@ namespace ProceduralOCR
         public void InitializeBiases(double stdDev)
         {
             // Initialize biases to random values
-            for (int layer = 1; layer < LayerCount; layer++)
+            for (int k = 1; k < LayerCount; k++)
             {
-                double[] allNoise = MyRandom.NextStdGaussian(LayerSizes[layer]);
-                for (int j = 0; j < LayerSizes[layer]; j++)
+                double[] allNoise = MyRandom.NextStdGaussian(LayerSizes[k]);
+                for (int j = 0; j < LayerSizes[k]; j++)
                 {
-                    Biases[layer - 1][j] = (float)(allNoise[j] * stdDev);
+                    Biases[k - 1][j] = (float)(allNoise[j] * stdDev);
                 }
             }
         }
 
-        public void CalculateLayer(int layer)
+        public void CalculateLayer(int k)
         {
             // Loop over all destination neurons in the current layer
-            for (int j = 0; j < LayerSizes[layer]; j++)
+            Parallel.For(0, LayerSizes[k], j =>
             {
                 // Apply bias
-                float argument = Biases[layer - 1][j];
+                float argument = Biases[k - 1][j];
+
                 // Sum all contributions of the previous layer
-                for (int i = 0; i < LayerSizes[layer - 1]; i++)
+                for (int i = 0; i < LayerSizes[k - 1]; i++)
                 {
-                    float source = Layers[layer - 1][i];
-                    float weight = Weights[layer - 1][i, j];
+                    float source = Layers[k - 1][i];
+                    float weight = Weights[k - 1][i, j];
                     argument += source * weight;
                 }
-                // Apply activation function (ReLU)
-                argument = Math.Max(argument, 0.0f);
-                // Assign current neuron
-                Layers[layer][j] = argument;
-            }
+
+                // Assign pre-activation function neuron
+                WeightedSums[k][j] = argument;
+
+                // Apply activation function and assign final neuron
+                Layers[k][j] = ActivationFunction(argument);
+            });
         }
 
         public float[] GetOutput(float[] input)
         {
-            Layers[0] = input;
-            for (int layer = 1; layer < LayerCount; layer++)
+            Layers[0] = WeightedSums[0] = input;
+            for (int k = 1; k < LayerCount; k++)
             {
-                CalculateLayer(layer);
+                CalculateLayer(k);
             }
             return Layers[LayerCount - 1];
         }
@@ -104,29 +131,23 @@ namespace ProceduralOCR
             return output.Zip(target, (a, b) => (a - b) * (a - b)).Sum();
         }
 
-        public void UpdateWeights(List<float[,]> delta)
+        /// <summary>
+        /// Applies the rectified linear unit (ReLU) activation function to a single input number.
+        /// </summary>
+        public float ActivationFunction(float argument)
         {
-            for (int layer = 0; layer < LayerCount - 1; layer++)
-            {
-                for (int j = 0; j < LayerSizes[layer + 1]; j++)
-                {
-                    for (int i = 0; i < LayerSizes[layer]; i++)
-                    {
-                        Weights[layer][i, j] += delta[layer][i, j];
-                    }
-                }
-            }
+            // return Math.Max(argument, 0.0f);
+            return (float)(1.0 / (1.0 + Math.Exp(-argument)));
         }
 
-        public void UpdateBiases(List<float[]> delta)
+        /// <summary>
+        /// Applies the derivative of the rectified linear unit (ReLU) activation function to a single input number.
+        /// The result is a Heaviside step function.
+        /// </summary>
+        public float ActivationFunctionDeriv(float argument)
         {
-            for (int layer = 1; layer < LayerCount; layer++)
-            {
-                for (int j = 0; j < LayerSizes[layer]; j++)
-                {
-                    Biases[layer - 1][j] += delta[layer - 1][j];
-                }
-            }
+            // return (argument > 0.0f ? 1.0f : 0.0f);
+            return ActivationFunction(argument) * (1.0f - ActivationFunction(argument));
         }
     }
 }
