@@ -1,0 +1,17 @@
+C:\Users\Basile\Repos\procedural-ocr\UnitTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+C:\Users\Basile\Repos\procedural-ocr\UnitTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+C:\Users\Basile\Repos\procedural-ocr\UnitTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+C:\Users\Basile\Repos\procedural-ocr\UnitTests\bin\Debug\UnitTests.dll
+C:\Users\Basile\Repos\procedural-ocr\UnitTests\bin\Debug\UnitTests.pdb
+C:\Users\Basile\Repos\procedural-ocr\UnitTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.dll
+C:\Users\Basile\Repos\procedural-ocr\UnitTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll
+C:\Users\Basile\Repos\procedural-ocr\UnitTests\bin\Debug\ProceduralOCR.exe
+C:\Users\Basile\Repos\procedural-ocr\UnitTests\bin\Debug\ProceduralOCR.pdb
+C:\Users\Basile\Repos\procedural-ocr\UnitTests\bin\Debug\ProceduralOCR.exe.config
+C:\Users\Basile\Repos\procedural-ocr\UnitTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
+C:\Users\Basile\Repos\procedural-ocr\UnitTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
+C:\Users\Basile\Repos\procedural-ocr\UnitTests\obj\Debug\UnitTests.csprojAssemblyReference.cache
+C:\Users\Basile\Repos\procedural-ocr\UnitTests\obj\Debug\UnitTests.csproj.CoreCompileInputs.cache
+C:\Users\Basile\Repos\procedural-ocr\UnitTests\obj\Debug\UnitTests.csproj.CopyComplete
+C:\Users\Basile\Repos\procedural-ocr\UnitTests\obj\Debug\UnitTests.dll
+C:\Users\Basile\Repos\procedural-ocr\UnitTests\obj\Debug\UnitTests.pdb

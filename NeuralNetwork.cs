@@ -115,7 +115,7 @@ namespace ProceduralOCR
             });
         }
 
-        public float[] GetOutput(float[] input)
+        public float[] FeedForward(float[] input)
         {
             Layers[0] = WeightedSums[0] = input;
             for (int k = 1; k < LayerCount; k++)
@@ -127,8 +127,23 @@ namespace ProceduralOCR
 
         public float GetTotalError(float[] input, float[] target)
         {
-            float[] output = GetOutput(input);
+            float[] output = FeedForward(input);
+            return GetOutputError(output, target);
+        }
+
+        public float GetOutputError(float[] output, float[] target)
+        {
             return output.Zip(target, (a, b) => (a - b) * (a - b)).Sum();
+        }
+
+        /// <summary>
+        /// Updates this network to incorporate the given gradient, adding all incoming weights and biases to the existing values
+        /// (after first multiplying them with multFact).
+        /// </summary>
+        /// <param name="multFact">The learning rate (if the gradient is scaled correctly).</param>
+        public void ApplyGradient(Gradient gradient, float multFact)
+        {
+            gradient.UpdateNetwork(this, multFact);
         }
 
         /// <summary>
@@ -138,6 +153,7 @@ namespace ProceduralOCR
         {
             // return Math.Max(argument, 0.0f);
             return (float)(1.0 / (1.0 + Math.Exp(-argument)));
+            // return (float)Math.Tanh(argument);
         }
 
         /// <summary>
@@ -148,6 +164,7 @@ namespace ProceduralOCR
         {
             // return (argument > 0.0f ? 1.0f : 0.0f);
             return ActivationFunction(argument) * (1.0f - ActivationFunction(argument));
+            // return (float)(1.0 - Math.Pow(Math.Tanh(argument), 2.0));
         }
     }
 }

@@ -49,7 +49,9 @@ namespace ProceduralOCR
 
         private void btnTrain_Click(object sender, RoutedEventArgs e)
         {
-            var result = ocrModel.TrainModel(64, 64);
+            var result = ocrModel.TrainModel(256, 4, 64);
+            txtResult.Text = "Mini-batch errors over time:" + Environment.NewLine +
+                string.Join(Environment.NewLine, result.BatchErrors);
         }
 
         private void btnTest_Click(object sender, RoutedEventArgs e)

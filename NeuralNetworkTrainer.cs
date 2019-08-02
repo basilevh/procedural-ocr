@@ -13,7 +13,7 @@ namespace ProceduralOCR
     /// </summary>
     public class NeuralNetworkTrainer
     {
-        private const float learningRate = 0.20f; // Gradient multiplication factor
+        private const float learningRate = 0.35f; // Gradient multiplication factor
         // private const bool analytic = false;
 
         public NeuralNetworkTrainer(NeuralNetwork network)
@@ -24,33 +24,39 @@ namespace ProceduralOCR
         public NeuralNetwork Network { get; }
 
         /// <summary>
-        /// Adjusts the network's weights and biases to better match the given set of labeled characters.
+        /// Adjusts the network's weights and biases using backpropagation to better match the given set of training examples.
         /// </summary>
-        /// <param name="elements">Mini-batch of input-output pairs / training examples that indirectly dictates the gradient.</param>
-        public void SingleIteration(List<LabeledCharacter> elements)
+        /// <param name="examples">Mini-batch of input-output pairs / training examples that indirectly dictates the gradient.</param>
+        /// <returns>The training loss.</returns>
+        public float SingleIteration(List<InputOutputPair> examples)
         {
             var total = new Gradient(Network.LayerSizes);
-            foreach (var element in elements)
+            float errorSum = 0.0f;
+            foreach (var example in examples)
             {
-                var current = GetGradient(element);
-                total.AddWith(current);
+                var current = GetGradient(example);
+                total.AddWith(current.Item1);
+                errorSum += current.Item2;
             }
+
             // Update network with the averaged gradient (incorporated in the learning rate argument)
-            total.UpdateNetwork(Network, learningRate / elements.Count);
+            Network.ApplyGradient(total, learningRate / examples.Count);
+
+            // Get mean error before network update
+            float trainingLoss = errorSum / examples.Count;
+            return trainingLoss;
         }
 
         /// <summary>
-        /// Gets the raw gradient that would make the network better match the given labeled character.
+        /// Gets the raw gradient using backpropagation that would make the network better match the given training example.
         /// </summary>
-        public Gradient GetGradient(LabeledCharacter element)
+        /// <param name="example">The input layer and desired output layer.</param>
+        /// <returns>A tuple containing the gradient and the error before the parameter update.</returns>
+        public Tuple<Gradient, float> GetGradient(InputOutputPair example)
         {
-            float[] input = element.NetworkInput;
-            float[] target = new float[10]; // desired output
-            float[] output = Network.GetOutput(input); // actual output; sets the layer arrays
-            for (int i = 0; i < 10; i++)
-            {
-                target[i] = (i == element.Character - '0' ? 1.0f : 0.0f);
-            }
+            float[] target = example.Output;
+            float[] output = Network.FeedForward(example.Input);
+            float error = Network.GetOutputError(output, target);
 
             // Initialize gradient
             var result = new Gradient(Network.LayerSizes);
@@ -78,7 +84,7 @@ namespace ProceduralOCR
                 desiredChange = nextDesiredChange;
             }
 
-            return result;
+            return new Tuple<Gradient, float>(result, error);
         }
 
         // These methods do not work (likely far too much noise):
