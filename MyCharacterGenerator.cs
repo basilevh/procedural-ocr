@@ -20,7 +20,7 @@ namespace ProceduralOCR
     {
         private readonly string[] MyTypefaces = {
             // Common
-            "Arial"/*, "Comic Sans MS", "Courier New",
+            "Arial", "Comic Sans MS", "Courier New",
             "Garamond", "Georgia", "Impact",
             "Times New Roman", "Trebuchet MS", "Verdana",
             // Handwriting
@@ -29,7 +29,7 @@ namespace ProceduralOCR
             "Kunstler Script",  "Lucida Calligraphy", "Lucida Handwriting",
             "Matura MT Script Capitals", "Mistral", "Palace Script MT",
             "Pristina", "Script MT", "Segoe Script",
-            "Viner Hand ITC", "Vladimir Script"*/
+            "Viner Hand ITC", "Vladimir Script"
             };
 
 
@@ -39,19 +39,26 @@ namespace ProceduralOCR
             this.imageHeight = imageHeight;
             random = new Random();
 
-            // Default parameters
-            /*NoiseStdDev = 0.05;
+            // Hard parameters
+            NoiseStdDev = 0.05;
             MaxRotationAngle = 15.0;
             MaxScaleFactor = 1.1;
             MaxSkewAngle = 15.0;
-            TranslationFraction = 1.0;*/
+            TranslationFraction = 1.0;
 
-            // Easier parameters
-            NoiseStdDev = 0.01;
+            // Medium parameters
+            NoiseStdDev = 0.05;
+            MaxRotationAngle = 10.0;
+            MaxScaleFactor = 1.05;
+            MaxSkewAngle = 10.0;
+            TranslationFraction = 0.5;
+
+            // Easy parameters (for debugging)
+            /*NoiseStdDev = 0.01;
             MaxRotationAngle = 1.0;
             MaxScaleFactor = 1.01;
             MaxSkewAngle = 1.0;
-            TranslationFraction = 0.1;
+            TranslationFraction = 0.1;*/
         }
 
         private readonly int imageWidth, imageHeight;
@@ -134,8 +141,8 @@ namespace ProceduralOCR
             transforms.Children.Add(new SkewTransform(angleX, angleY, centerX, centerY));
 
             // Apply random translation
-            double transX = (random.NextDouble() * imageWidth / 4.0 - imageWidth / 8.0) * TranslationFraction;
-            double transY = (random.NextDouble() * imageHeight / 6.0 - imageHeight / 12.0) * TranslationFraction;
+            double transX = (random.NextDouble() * imageWidth / 5.0 - imageWidth / 8.0) * TranslationFraction;
+            double transY = (random.NextDouble() * imageHeight / 10.0 - imageHeight / 7.0) * TranslationFraction;
             transforms.Children.Add(new TranslateTransform(transX, transY));
             visual.Transform = transforms;
 

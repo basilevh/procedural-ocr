@@ -64,13 +64,15 @@
     </Compile>
     <Compile Include="Gradient.cs" />
     <Compile Include="ICharacterGenerator.cs" />
+    <Compile Include="INetworkTrainer.cs" />
     <Compile Include="InputOutputPair.cs" />
     <Compile Include="IOCRModel.cs" />
     <Compile Include="LabeledCharacter.cs" />
     <Compile Include="MyBitmapTools.cs" />
     <Compile Include="MyCharacterGenerator.cs" />
     <Compile Include="MyRandom.cs" />
-    <Compile Include="NeuralNetworkTrainer.cs" />
+    <Compile Include="BackpropNetworkTrainer.cs" />
+    <Compile Include="NetworkVisualizer.cs" />
     <Compile Include="TestResult.cs" />
     <Compile Include="TrainResult.cs" />
     <Compile Include="MainWindow.xaml.cs">

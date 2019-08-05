@@ -95,6 +95,7 @@ namespace ProceduralOCR
         {
             // Loop over all destination neurons in the current layer
             Parallel.For(0, LayerSizes[k], j =>
+            // for (int j = 0; j < LayerSizes[k]; j++)
             {
                 // Apply bias
                 float argument = Biases[k - 1][j];

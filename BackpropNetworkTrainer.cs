@@ -9,29 +9,24 @@ using System.Threading.Tasks;
 namespace ProceduralOCR
 {
     /// <summary>
-    /// Object that trains a single given neural network.
+    /// Object that trains a single given neural network using backpropagation.
     /// </summary>
-    public class NeuralNetworkTrainer
+    public class BackpropNetworkTrainer : INetworkTrainer
     {
-        private const float learningRate = 0.35f; // Gradient multiplication factor
+        private const float learningRate = 0.20f; // Gradient multiplication factor
         // private const bool analytic = false;
 
-        public NeuralNetworkTrainer(NeuralNetwork network)
+        public BackpropNetworkTrainer(NeuralNetwork network)
         {
             Network = network;
         }
 
         public NeuralNetwork Network { get; }
 
-        /// <summary>
-        /// Adjusts the network's weights and biases using backpropagation to better match the given set of training examples.
-        /// </summary>
-        /// <param name="examples">Mini-batch of input-output pairs / training examples that indirectly dictates the gradient.</param>
-        /// <returns>The training loss.</returns>
-        public float SingleIteration(List<InputOutputPair> examples)
+        public double SingleIteration(List<InputOutputPair> examples)
         {
             var total = new Gradient(Network.LayerSizes);
-            float errorSum = 0.0f;
+            double errorSum = 0.0;
             foreach (var example in examples)
             {
                 var current = GetGradient(example);
@@ -43,7 +38,7 @@ namespace ProceduralOCR
             Network.ApplyGradient(total, learningRate / examples.Count);
 
             // Get mean error before network update
-            float trainingLoss = errorSum / examples.Count;
+            double trainingLoss = errorSum / examples.Count;
             return trainingLoss;
         }
 
@@ -67,16 +62,18 @@ namespace ProceduralOCR
             {
                 float[] nextDesiredChange = new float[Network.LayerSizes[k]];
                 Parallel.For(0, Network.LayerSizes[k + 1], j =>
+                // for (int j = 0; j < Network.LayerSizes[k + 1]; j++)
                 {
                     // Apply the negative paterial derivative of the total error with respect to this bias
-                    result.DeltaBiases[k][j] = desiredChange[j] * Network.ActivationFunctionDeriv(Network.WeightedSums[k + 1][j]);
+                    float commonFactor = desiredChange[j] * Network.ActivationFunctionDeriv(Network.WeightedSums[k + 1][j]);
+                    result.DeltaBiases[k][j] = commonFactor;
                     for (int i = 0; i < Network.LayerSizes[k]; i++)
                     {
                         // Apply the negative partial derivative of the total error with respect to this weight
-                        result.DeltaWeights[k][i, j] = Network.Layers[k][i] * result.DeltaBiases[k][j];
+                        result.DeltaWeights[k][i, j] = Network.Layers[k][i] * commonFactor;
 
                         // Update the negative partial derivative of the total error with respect to this neuron value
-                        nextDesiredChange[i] += Network.Weights[k][i, j] * result.DeltaBiases[k][j];
+                        nextDesiredChange[i] += Network.Weights[k][i, j] * commonFactor;
                     }
                 });
 

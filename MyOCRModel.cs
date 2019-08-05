@@ -15,23 +15,24 @@ namespace ProceduralOCR
             this.imageWidth = imageWidth;
             this.imageHeight = imageHeight;
             this.characterGenerator = characterGenerator;
-            // var layerSizes = new List<int>() { imageWidth * imageHeight, 20, 10, 10 };
-            var layerSizes = new List<int>() { imageWidth * imageHeight, 20, 10 };
+            var layerSizes = new List<int>() { imageWidth * imageHeight, 32, 16, 10 };
+            // var layerSizes = new List<int>() { imageWidth * imageHeight, 20, 10 };
             // var layerSizes = new List<int>() { imageWidth * imageHeight, 10 };
-            neuralNetwork = new NeuralNetwork(layerSizes);
-            neuralNetwork.InitializeWeights(0.2);
-            neuralNetwork.InitializeBiases(0.2);
-            networkTrainer = new NeuralNetworkTrainer(neuralNetwork);
+            NeuralNetwork = new NeuralNetwork(layerSizes);
+            NeuralNetwork.InitializeWeights(0.2);
+            NeuralNetwork.InitializeBiases(0.2);
+            networkTrainer = new BackpropNetworkTrainer(NeuralNetwork);
         }
 
         private readonly int imageWidth, imageHeight;
         private readonly ICharacterGenerator characterGenerator;
-        private readonly NeuralNetwork neuralNetwork;
-        private readonly NeuralNetworkTrainer networkTrainer;
+        private readonly BackpropNetworkTrainer networkTrainer;
+
+        public NeuralNetwork NeuralNetwork { get; }
 
         public TrainResult TrainModel(int batches, int batchSize, int itersPerBatch)
         {
-            float[] batchErrors = new float[batches];
+            double[] batchErrors = new double[batches];
             for (int b = 0; b < batches; b++)
             {
                 // Convert labeled characters to more general input-output pairs
@@ -40,7 +41,7 @@ namespace ProceduralOCR
                         i => (i + '0') == lc.Character ? 1.0f : 0.0f).ToArray())).ToList();
 
                 // Perform multiple gradient descent steps per batch
-                float[] iterErrors = new float[itersPerBatch];
+                double[] iterErrors = new double[itersPerBatch];
                 for (int i = 0; i < itersPerBatch; i++)
                 { 
                     iterErrors[i] = networkTrainer.SingleIteration(examples);
@@ -71,7 +72,7 @@ namespace ProceduralOCR
 
         public SingleResult ExecuteSingle(float[,] input)
         {
-            float[] output = neuralNetwork.FeedForward(MyBitmapTools.ReshapeArray(input));
+            float[] output = NeuralNetwork.FeedForward(MyBitmapTools.ReshapeArray(input));
             return new SingleResult(CreateDictFromProbs(output));
         }
 

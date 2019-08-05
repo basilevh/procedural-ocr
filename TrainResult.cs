@@ -10,11 +10,11 @@ namespace ProceduralOCR
 {
     public struct TrainResult
     {
-        public TrainResult(float[] batchErrors)
+        public TrainResult(double[] batchErrors)
         {
             BatchErrors = batchErrors;
         }
 
-        public float[] BatchErrors { get; }
+        public double[] BatchErrors { get; }
     }
 }

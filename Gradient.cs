@@ -63,6 +63,7 @@ namespace ProceduralOCR
         private static void AddWith(float[,] recipient, float[,] other, float multFact)
         {
             Parallel.For(0, recipient.GetLength(0), i =>
+            // for (int i = 0; i < recipient.GetLength(0); i++)
             {
                 for (int j = 0; j < recipient.GetLength(1); j++)
                 {
@@ -74,6 +75,7 @@ namespace ProceduralOCR
         private static void AddWith(float[] recipient, float[] other, float multFact)
         {
             Parallel.For(0, recipient.Length, j =>
+            // for (int j = 0; j < recipient.Length; j++)
             {
                 recipient[j] += other[j] * multFact;
             });
