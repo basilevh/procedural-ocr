@@ -23,7 +23,7 @@ namespace ProceduralOCR.Tests
             network.InitializeBiases(0.5);
 
             // Initialize trainer
-            var trainer = new BackpropNetworkTrainer(network);
+            var trainer = new BackpropNetworkTrainer(network, 0.20f);
             var example0 = new InputOutputPair(new float[] { 0.0f }, new float[] { -0.3f });
             var example1 = new InputOutputPair(new float[] { 1.0f }, new float[] { 0.6f });
             var examples = new List<InputOutputPair>() { example0, example1 };

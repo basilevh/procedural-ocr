@@ -16,9 +16,9 @@ namespace ProceduralOCR
         private const int neuronSize = 4;
         private const int neuronPadding = 1;
         private const int neuronFullSize = neuronSize + neuronPadding;
-        private const int sectionPadding = 16;
+        private const int sectionPadding = 8;
 
-        public static ImageSource Draw(NeuralNetwork network, float[,] input)
+        public static ImageSource DrawNeurons(NeuralNetwork network, float[,] input)
         {
             int inputWidth = input.GetLength(0);
             int inputHeight = input.GetLength(1);

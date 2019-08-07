@@ -20,9 +20,9 @@ namespace ProceduralOCR
     {
         private readonly string[] MyTypefaces = {
             // Common
-            "Arial", "Comic Sans MS", "Courier New",
+            /*"Arial", "Comic Sans MS", "Courier New",
             "Garamond", "Georgia", "Impact",
-            "Times New Roman", "Trebuchet MS", "Verdana",
+            "Times New Roman", "Trebuchet MS", "Verdana",*/
             // Handwriting
             "Bradley Hand ITC", "Brush Script MT", "Brush Script Std",
             "Edwardian Script ITC", "Freestyle Script", "French Script MT",
@@ -35,23 +35,23 @@ namespace ProceduralOCR
 
         public MyCharacterGenerator(int imageWidth, int imageHeight)
         {
-            this.imageWidth = imageWidth;
-            this.imageHeight = imageHeight;
+            ImageWidth = imageWidth;
+            ImageHeight = imageHeight;
             random = new Random();
 
             // Hard parameters
-            NoiseStdDev = 0.05;
+            /*NoiseStdDev = 0.07;
             MaxRotationAngle = 15.0;
             MaxScaleFactor = 1.1;
             MaxSkewAngle = 15.0;
-            TranslationFraction = 1.0;
+            TranslationFraction = 0.7;*/
 
             // Medium parameters
-            NoiseStdDev = 0.05;
+            NoiseStdDev = 0.04;
             MaxRotationAngle = 10.0;
             MaxScaleFactor = 1.05;
             MaxSkewAngle = 10.0;
-            TranslationFraction = 0.5;
+            TranslationFraction = 0.4;
 
             // Easy parameters (for debugging)
             /*NoiseStdDev = 0.01;
@@ -61,8 +61,11 @@ namespace ProceduralOCR
             TranslationFraction = 0.1;*/
         }
 
-        private readonly int imageWidth, imageHeight;
         private readonly Random random;
+
+        public int ImageWidth { get; }
+
+        public int ImageHeight { get; }
 
         /// <summary>
         /// The standard deviation of the Gaussian noise applied on all pixels, as a fraction of the maximum pixel value.
@@ -106,7 +109,7 @@ namespace ProceduralOCR
         {
             // Initialize character and output array
             char toDraw = random.Next(10).ToString()[0];
-            float[,] output = new float[imageWidth, imageHeight];
+            float[,] output = new float[ImageWidth, ImageHeight];
 
             // Create visual and draw text
             var visual = new DrawingVisual();
@@ -114,10 +117,10 @@ namespace ProceduralOCR
             {
                 string text = toDraw.ToString();
                 // Character should fill (most of) the image
-                double fontSize = imageHeight;
+                double fontSize = ImageHeight;
                 // These offsets are approximations made for 16 x 16 Times New Roman
-                double offsetX = imageWidth / 4.0;
-                double offsetY = -imageHeight / 12.0;
+                double offsetX = ImageWidth / 4.0;
+                double offsetY = -ImageHeight / 12.0;
                 string tfName = MyTypefaces[random.Next(MyTypefaces.Length)];
                 context.DrawText(new FormattedText(text, CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
                     new Typeface(tfName), fontSize, Brushes.White), new Point(offsetX, offsetY));
@@ -126,8 +129,8 @@ namespace ProceduralOCR
             // Apply random rotation
             var transforms = new TransformGroup();
             double angle = random.NextDouble() * MaxRotationAngle * 2.0 - MaxRotationAngle;
-            double centerX = imageWidth / 2.0;
-            double centerY = imageHeight / 2.0;
+            double centerX = ImageWidth / 2.0;
+            double centerY = ImageHeight / 2.0;
             transforms.Children.Add(new RotateTransform(angle, centerX, centerY));
 
             // Apply random scaling
@@ -141,23 +144,23 @@ namespace ProceduralOCR
             transforms.Children.Add(new SkewTransform(angleX, angleY, centerX, centerY));
 
             // Apply random translation
-            double transX = (random.NextDouble() * imageWidth / 5.0 - imageWidth / 8.0) * TranslationFraction;
-            double transY = (random.NextDouble() * imageHeight / 10.0 - imageHeight / 7.0) * TranslationFraction;
+            double transX = (random.NextDouble() * ImageWidth / 5.0 - ImageWidth / 8.0) * TranslationFraction;
+            double transY = (random.NextDouble() * ImageHeight / 10.0 - ImageHeight / 7.0) * TranslationFraction;
             transforms.Children.Add(new TranslateTransform(transX, transY));
             visual.Transform = transforms;
 
             // Render and copy to output
-            var bmp = new RenderTargetBitmap(imageWidth, imageHeight, 96.0, 96.0, PixelFormats.Pbgra32);
+            var bmp = new RenderTargetBitmap(ImageWidth, ImageHeight, 96.0, 96.0, PixelFormats.Pbgra32);
             bmp.Render(visual);
-            byte[] bytes = new byte[imageWidth * imageHeight * 4];
-            bmp.CopyPixels(bytes, imageWidth * 4, 0);
-            double[] allNoise = MyRandom.NextStdGaussian(imageWidth * imageHeight);
-            for (int y = 0; y < imageHeight; y++)
+            byte[] bytes = new byte[ImageWidth * ImageHeight * 4];
+            bmp.CopyPixels(bytes, ImageWidth * 4, 0);
+            double[] allNoise = MyRandom.NextStdGaussian(ImageWidth * ImageHeight);
+            for (int y = 0; y < ImageHeight; y++)
             {
-                for (int x = 0; x < imageWidth; x++)
+                for (int x = 0; x < ImageWidth; x++)
                 {
                     // Perform uniform conversion from [0, 255] to [0.0, 1.0) and apply gaussian noise
-                    int index = x + y * imageWidth;
+                    int index = x + y * ImageWidth;
                     float input = bytes[index * 4] / 256.0f;
                     float noise = (float)(allNoise[index] * NoiseStdDev);
                     output[x, y] = Math.Min(Math.Max(input + noise, 0.0f), 1.0f);

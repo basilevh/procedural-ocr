@@ -13,15 +13,14 @@ namespace ProceduralOCR
     /// </summary>
     public class BackpropNetworkTrainer : INetworkTrainer
     {
-        private const float learningRate = 0.20f; // Gradient multiplication factor
-        // private const bool analytic = false;
-
-        public BackpropNetworkTrainer(NeuralNetwork network)
+        public BackpropNetworkTrainer(NeuralNetwork network, float learningRate)
         {
             Network = network;
+            LearningRate = learningRate;
         }
 
         public NeuralNetwork Network { get; }
+        public float LearningRate { get; } // Gradient multiplication factor
 
         public double SingleIteration(List<InputOutputPair> examples)
         {
@@ -35,7 +34,7 @@ namespace ProceduralOCR
             }
 
             // Update network with the averaged gradient (incorporated in the learning rate argument)
-            Network.ApplyGradient(total, learningRate / examples.Count);
+            Network.ApplyGradient(total, LearningRate / examples.Count);
 
             // Get mean error before network update
             double trainingLoss = errorSum / examples.Count;

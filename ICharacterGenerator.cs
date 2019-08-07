@@ -16,5 +16,9 @@ namespace ProceduralOCR
         LabeledCharacter Generate();
 
         List<LabeledCharacter> GenerateMulti(int count);
+
+        int ImageWidth { get; }
+
+        int ImageHeight { get; }
     }
 }

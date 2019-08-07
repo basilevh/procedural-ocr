@@ -23,15 +23,15 @@ namespace ProceduralOCR
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const int imageWidth = 20;
-        private const int imageHeight = 20;
+        private const int imageWidth = 24;
+        private const int imageHeight = 24;
 
         public MainWindow()
         {
             InitializeComponent();
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor); // better visualization
             characterGenerator = new MyCharacterGenerator(imageWidth, imageHeight);
-            ocrModel = new MyOCRModel(imageWidth, imageHeight, characterGenerator);
+            ocrModel = new MyOCRModel(characterGenerator);
         }
 
         private float[,] currentInput;
@@ -57,56 +57,56 @@ namespace ProceduralOCR
 
         private void btnBrowse_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new OpenFileDialog();
-            dialog.Filter = "Image files (*.bmp;*.png;*.jpg;*.jpeg)|*.bmp;*.png;*.jpg;*.jpeg|All files (*.*)|*.*";
+            var dialog = new OpenFileDialog
+            {
+                Filter = "Image files (*.bmp;*.png;*.jpg;*.jpeg)|*.bmp;*.png;*.jpg;*.jpeg|All files (*.*)|*.*"
+            };
             if (dialog.ShowDialog() == true)
             {
                 var image = new BitmapImage(new Uri(dialog.FileName));
                 currentInput = MyBitmapTools.GetArray(image);
-                imageControl.Source = MyBitmapTools.GetImageGray8(currentInput);
+                
+                recognize();
             }
         }
-
-        private void btnRecognize_Click(object sender, RoutedEventArgs e)
-        {
-            recognize();
-        }
-
+        
         private void feedExample()
         {
             var output = characterGenerator.Generate();
             currentInput = output.Image;
             recognize();
-
-            // Show input
-            // var image = MyBitmapTools.GetImageGray8(output.Image);
-            // Visualize full network
-            var image = NetworkVisualizer.Draw((ocrModel as MyOCRModel).NeuralNetwork, output.Image);
-            imageControl.Source = image;
         }
 
         private void train()
         {
-            var result = ocrModel.TrainModel(128, 8, 32);
-            txtResult.Text = "Mini-batch errors over time:" + Environment.NewLine +
-                string.Join(Environment.NewLine, result.BatchErrors.Select(
-                    d => d.ToString("0.000000")));
+            var result = ocrModel.TrainModel(1024, 4, 1, 0.40f);
+            // TODO: plot errors
         }
 
         private void test()
         {
             var result = ocrModel.TestModel(1024);
-            txtResult.Text = "Accuracy:" + Environment.NewLine +
-                ((double)result.Correct / result.Tested * 100.0).ToString("0.00") + "%";
+            txtResult.Text = "Accuracy: " + (result.TotalAccuracy * 100.0).ToString("0.00") + "%"
+                + Environment.NewLine + string.Join(Environment.NewLine, result.Accuracy.Select(
+                    (a, i) => i + ": " + (a * 100.0).ToString("0.00") + "%"));
+            // TODO: show gallery
         }
 
         private void recognize()
         {
             // Assumes currentInput is set correctly
+            // Show input
+            imgInput.Source = MyBitmapTools.GetImageGray8(currentInput);
+
+            // Feed forward
             var result = ocrModel.ExecuteSingle(currentInput);
             txtResult.Text = "Recog: " + result.MostConfident + string.Join("",
                 Enumerable.Range('0', 10).Select(c => Environment.NewLine +
                 (char)c + ": " + result.GetProbability((char)c).ToString("0.0000")));
+            
+            // Visualize full network
+            var image = NetworkVisualizer.DrawNeurons((ocrModel as MyOCRModel).NeuralNetwork, currentInput);
+            imgNetwork.Source = image;
         }
     }
 }
