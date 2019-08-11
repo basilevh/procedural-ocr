@@ -11,9 +11,9 @@ namespace ProceduralOCR
     /// <summary>
     /// Digit recognizer based on a deep neural network.
     /// </summary>
-    public class MyOCRModel : IOCRModel
+    public class NeuralOCRModel : IOCRModel
     {
-        public MyOCRModel(ICharacterGenerator characterGenerator, List<int> hiddenLayerSizes)
+        public NeuralOCRModel(ICharacterSource characterGenerator, List<int> hiddenLayerSizes)
         {
             ImageWidth = characterGenerator.ImageWidth;
             ImageHeight = characterGenerator.ImageHeight;
@@ -27,11 +27,11 @@ namespace ProceduralOCR
             NeuralNetwork.InitializeBiases(0.2);
         }
 
-        public MyOCRModel(ICharacterGenerator characterGenerator)
+        public NeuralOCRModel(ICharacterSource characterGenerator)
             : this(characterGenerator, new List<int>() { 32, 16 })
         { }
 
-        private readonly ICharacterGenerator characterGenerator;
+        private readonly ICharacterSource characterGenerator;
 
         public int ImageWidth { get; }
 
@@ -101,10 +101,11 @@ namespace ProceduralOCR
         private static IDictionary<char, float> CreateDictFromProbs(float[] probabilities)
         {
             var result = new Dictionary<char, float>();
+            float sum = probabilities.Sum();
             for (int i = 0; i <= 9; i++)
             {
                 char c = (char)(i + '0');
-                result[c] = probabilities[i];
+                result[c] = probabilities[i] / sum;
             }
             return result;
         }

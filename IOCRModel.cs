@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace ProceduralOCR
 {
+    /// <summary>
+    /// Interface for a 2D image classifier.
+    /// </summary>
     public interface IOCRModel
     {
         TrainResult TrainModel(int batches, int batchSize, int itersPerBatch, float learningRate);

@@ -5,15 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProceduralOCR"
         mc:Ignorable="d"
-        Title="Procedural OCR" Height="640" Width="640" WindowStartupLocation="CenterScreen" Icon="WritingFeatherRed.ico">
+        Title="Procedural OCR" Height="640" Width="640" WindowStartupLocation="CenterScreen" Icon="WritingFeatherRed.ico" Background="#FF40403C">
     <Grid>
-        <Label Content="© Basile Van Hoorick" HorizontalAlignment="Right" Margin="0,0,0,0" VerticalAlignment="Bottom" Foreground="#7F000000"/>
+        <Label Content="© Basile Van Hoorick" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Bottom" Foreground="#7FFFFFFF" HorizontalContentAlignment="Center"/>
         <Button x:Name="btnExample" Content="Example" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="btnExample_Click"/>
         <Button x:Name="btnTrain" Content="Train" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top" Width="75" Click="btnTrain_Click"/>
         <Button x:Name="btnTest" Content="Test" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="75" Click="btnTest_Click"/>
         <Button x:Name="btnBrowse" Content="Browse..." HorizontalAlignment="Left" Margin="10,85,0,0" VerticalAlignment="Top" Width="75" Click="btnBrowse_Click"/>
-        <TextBox x:Name="txtResult" HorizontalAlignment="Left" Margin="90,10,0,0" TextWrapping="Wrap" Text="Result" VerticalAlignment="Top" Width="160" IsReadOnly="True" FontSize="16" VerticalScrollBarVisibility="Visible" Height="240"/>
-        <Image x:Name="imgInput" HorizontalAlignment="Left" Margin="10,255,0,10"  Width="240"  VerticalAlignment="Stretch" />
+        <TextBox x:Name="txtResult" HorizontalAlignment="Left" Margin="90,10,0,0" TextWrapping="Wrap" Text="Result" VerticalAlignment="Top" Width="160" IsReadOnly="True" FontSize="14" VerticalScrollBarVisibility="Visible" Height="250"/>
+        <Image x:Name="imgInput" HorizontalAlignment="Left" Margin="10,265,0,25.8"  Width="240"  VerticalAlignment="Stretch" />
         <Image x:Name="imgNetwork" HorizontalAlignment="Stretch" Margin="255,10,10,26" VerticalAlignment="Stretch" />
 
     </Grid>

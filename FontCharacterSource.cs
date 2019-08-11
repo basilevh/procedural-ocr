@@ -14,9 +14,10 @@ using System.Windows.Media.Imaging;
 namespace ProceduralOCR
 {
     /// <summary>
-    /// Character generator implementation that adds random noise, rotations, and skews.
+    /// Character source implementation based on system-installed fonts.
+    /// Image augmentation is performed in the form of random noise, rotations, scalings, translations and skews.
     /// </summary>
-    public class MyCharacterGenerator : ICharacterGenerator
+    public class FontCharacterSource : ICharacterSource
     {
         private readonly string[] MyTypefaces = {
             // Common
@@ -33,7 +34,7 @@ namespace ProceduralOCR
             };
 
 
-        public MyCharacterGenerator(int imageWidth, int imageHeight)
+        public FontCharacterSource(int imageWidth, int imageHeight)
         {
             ImageWidth = imageWidth;
             ImageHeight = imageHeight;

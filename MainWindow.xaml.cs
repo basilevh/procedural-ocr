@@ -30,12 +30,12 @@ namespace ProceduralOCR
         {
             InitializeComponent();
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor); // better visualization
-            characterGenerator = new MyCharacterGenerator(imageWidth, imageHeight);
-            ocrModel = new MyOCRModel(characterGenerator);
+            characterSource = new FontCharacterSource(imageWidth, imageHeight);
+            ocrModel = new NeuralOCRModel(characterSource);
         }
 
         private float[,] currentInput;
-        private ICharacterGenerator characterGenerator;
+        private ICharacterSource characterSource;
         private IOCRModel ocrModel;
 
         private void btnExample_Click(object sender, RoutedEventArgs e)
@@ -72,7 +72,7 @@ namespace ProceduralOCR
         
         private void feedExample()
         {
-            var output = characterGenerator.Generate();
+            var output = characterSource.Generate();
             currentInput = output.Image;
             recognize();
         }
@@ -85,11 +85,15 @@ namespace ProceduralOCR
 
         private void test()
         {
+            // Show accuracy
             var result = ocrModel.TestModel(1024);
             txtResult.Text = "Accuracy: " + (result.TotalAccuracy * 100.0).ToString("0.00") + "%"
                 + Environment.NewLine + string.Join(Environment.NewLine, result.Accuracy.Select(
                     (a, i) => i + ": " + (a * 100.0).ToString("0.00") + "%"));
-            // TODO: show gallery
+
+            // Create gallery
+            var image = NetworkVisualizer.DrawTestGallery(ocrModel, characterSource, 8, 8);
+            imgNetwork.Source = image;
         }
 
         private void recognize()
@@ -105,7 +109,7 @@ namespace ProceduralOCR
                 (char)c + ": " + result.GetProbability((char)c).ToString("0.0000")));
             
             // Visualize full network
-            var image = NetworkVisualizer.DrawNeurons((ocrModel as MyOCRModel).NeuralNetwork, currentInput);
+            var image = NetworkVisualizer.DrawNetworkSingle((ocrModel as NeuralOCRModel).NeuralNetwork, currentInput);
             imgNetwork.Source = image;
         }
     }

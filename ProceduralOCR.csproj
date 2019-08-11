@@ -66,13 +66,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Gradient.cs" />
-    <Compile Include="ICharacterGenerator.cs" />
+    <Compile Include="ICharacterSource.cs" />
     <Compile Include="INetworkTrainer.cs" />
     <Compile Include="InputOutputPair.cs" />
     <Compile Include="IOCRModel.cs" />
     <Compile Include="LabeledCharacter.cs" />
+    <Compile Include="MnistCharacterSource.cs" />
     <Compile Include="MyBitmapTools.cs" />
-    <Compile Include="MyCharacterGenerator.cs" />
+    <Compile Include="FontCharacterSource.cs" />
     <Compile Include="MyRandom.cs" />
     <Compile Include="BackpropNetworkTrainer.cs" />
     <Compile Include="NetworkVisualizer.cs" />
@@ -84,7 +85,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MyOCRModel.cs" />
+    <Compile Include="NeuralOCRModel.cs" />
     <Compile Include="NeuralNetwork.cs" />
     <Compile Include="SingleResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

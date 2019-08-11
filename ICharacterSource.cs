@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 namespace ProceduralOCR
 {
     /// <summary>
-    /// Interface for any generator of random optical characters in 2D array form.
+    /// Interface for a generator of (possibly random) optical characters in 2D array form.
     /// </summary>
-    public interface ICharacterGenerator
+    public interface ICharacterSource
     {
         LabeledCharacter Generate();
 
