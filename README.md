@@ -5,7 +5,7 @@ A deep neural network for the purpose of recognizing digits, that can be trained
 
 * **Why did I create this?**
   1. To demonstrate a small proof of concept that AI-related applications might not always need huge sets of data; obtaining the relevant data is often a practical issue in real-world scenarios.
-  2. To familiarize myself with deep learning by writing several algorithms from scratch in C# .NET.
+  2. While using Python libraries would of course be a more appropriate alternative in most use cases, a second reason is to familiarize myself with deep learning by writing several algorithms from scratch in C# .NET.
 
 * **What are the training and test sets?** A character generator class constantly creates new images on the fly, so in principle both sets are (almost) infinitely large. I intend to add support for MNIST for more reliable testing.
 
