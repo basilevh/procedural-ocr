@@ -1,5 +1,5 @@
 # procedural-ocr
-A small personal research project about a deep neural network for the purpose of recognizing digits, that can be trained "by itself" without explicitly requiring any input data.
+A small personal research project about a deep neural network (multilayer perceptron) for the purpose of recognizing digits, that can be trained "by itself" without explicitly requiring any input data.
 
 * **Why is no data required?** The trick is to use Windows' system-installed fonts that look like handwriting, for which we apply image augmentation in order to generate many diverse variants. The resulting images are *somewhat* realistically looking replications of human handwriting, but of course not as good as for example MNIST.
 
